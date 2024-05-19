@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>JS + CSS Clock</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-
-
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS + CSS Clock</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
     <div class="clock">
       <div class="clock-face">
         <div class="hand hour-hand"></div>
@@ -16,60 +14,135 @@
       </div>
     </div>
 
+    <style>
+      html {
+        background: #018ded url(https://unsplash.it/1500/1000?image=881&blur=5);
+        background-size: cover;
+        font-family: "helvetica neue";
+        text-align: center;
+        font-size: 10px;
+      }
 
-  <style>
-    html {
-      background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
-      background-size: cover;
-      font-family: 'helvetica neue';
-      text-align: center;
-      font-size: 10px;
-    }
+      body {
+        margin: 0;
+        font-size: 2rem;
+        display: flex;
+        flex: 1;
+        min-height: 100vh;
+        align-items: center;
+      }
 
-    body {
-      margin: 0;
-      font-size: 2rem;
-      display: flex;
-      flex: 1;
-      min-height: 100vh;
-      align-items: center;
-    }
+      .clock {
+        width: 30rem;
+        height: 30rem;
+        border: 20px solid white;
+        border-radius: 50%;
+        margin: 50px auto;
+        position: relative;
+        padding: 2rem;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #efefef,
+          inset 0 0 10px black, 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+      /* 圓盤 */
+      .clock-face {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform: translateY(
+          -3px
+        ); /* account for the height of the clock hands */
+      }
+      /* 時鐘中心 */
+      .clock-face::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #fff;
+      }
 
-    .clock {
-      width: 30rem;
-      height: 30rem;
-      border: 20px solid white;
-      border-radius: 50%;
-      margin: 50px auto;
-      position: relative;
-      padding: 2rem;
-      box-shadow:
-        0 0 0 4px rgba(0,0,0,0.1),
-        inset 0 0 0 3px #EFEFEF,
-        inset 0 0 10px black,
-        0 0 10px rgba(0,0,0,0.2);
-    }
+      .hand {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+      .second-hand::after {
+        position: absolute;
+        content: "";
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%);
+        width: 4px;
+        height: 50%;
+        background: red;
+      }
+      .min-hand::after {
+        position: absolute;
+        content: "";
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%);
+        width: 10px;
+        height: 45%;
+        background: #fff;
+      }
+      .hour-hand::after {
+        position: absolute;
+        content: "";
+        bottom: 50%;
+        left: 50%;
+        transform: translate(-50%);
+        width: 13px;
+        height: 35%;
+        background: #fff;
+      }
+    </style>
 
-    .clock-face {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
-    }
+    <script>
+      (function () {
+        const secondHand = document.querySelector(".second-hand");
+        const minHand = document.querySelector(".min-hand");
+        const hourHand = document.querySelector(".hour-hand");
 
-    .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
-      position: absolute;
-      top: 50%;
-    }
+        function setClock() {
+          const now = new Date();
+          const second = now.getSeconds();
+          const min = now.getMinutes();
+          const hour = now.getHours();
 
-  </style>
+          const secondDeg = second * 6; //((360 / 60))
+          const minDeg = min * 6 + (second * 6) / 60;
+          const hourDeg = (hour - 12) * 30 + (min * 30) / 60;
 
-  <script>
+          secondHand.style.transform = `rotate(${secondDeg}deg)`;
+          minHand.style.transform = `rotate(${minDeg}deg)`;
+          hourHand.style.transform = `rotate(${hourDeg}deg)`;
+        }
+        setClock(); //初始化畫面
 
+        //計時器：serInterval / setTimeout / requestAnimationFrame:
 
-  </script>
-</body>
+        //1. 設定間隔 持續執行
+        //setInterval(setClock, 1000);
+
+        //2. 設定延遲 執行一次，如果要重複執行則要重複呼叫
+        setTimeout(timeoutHandler, 1000);
+        function timeoutHandler() {
+          setClock();
+          setTimeout(timeoutHandler, 1000); //自己呼叫自己
+        }
+
+        //3. 畫面更新會執行，與畫面更新率有關
+        // window.requestAnimationFrame(animationHandler);
+        // function animationHandler() {
+        //   setClock();
+        //   window.requestAnimationFrame(animationHandler);
+        // }
+      })();
+    </script>
+  </body>
 </html>
